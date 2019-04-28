@@ -1,25 +1,20 @@
 @echo off
 
-IF NOT EXIST SourceFiles goto FirstRun
-
-
-IF NOT EXIST class goto MakeDir
-
-
-:FirstRun
+IF NOT EXIST SourceFiles (
 mkdir SourceFiles
 move *.java SourceFiles 
+ ) ELSE ( 
+ echo Folder SourceFiles already Exists )
 
-:MakeDir
-echo at mkdir
- mkdir class 
- 
 
+IF NOT EXIST class (
+mkdir class 
+
+) ELSE ( echo Folder class already Exists)
 
 
 cd class
 del *.class
-echo going to soucefile
 cd ..\SourceFiles
 javac *.java -d ..\class
 pause
