@@ -3,7 +3,6 @@ public class MoveManager extends PeaceManager
 	String SelectedPeace ;
 	String CurrentTurnMove;
 	int finxX;
-	
 	public MoveManager(String Peace,String Colofturn,int xX,String Debug)
 	{	
 		finxX = xX;
@@ -124,7 +123,7 @@ public class MoveManager extends PeaceManager
 		}
 	}
 	
-	public boolean CanMove(int x,int y,boolean TakePeace)
+	public boolean CanMove(int x,int y,boolean TakePeace,String P_Col)
 	{
 		 int MovesAllowedX;
 		 int MovesAllowedY;
@@ -147,7 +146,7 @@ public class MoveManager extends PeaceManager
 		{
 				MovesAllowedX = 8;
 				MovesAllowedY = 8;
-				if((x == y || x== -y  ) && (y == x || y== -x ) ||((x <= MovesAllowedX || x>=-MovesAllowedX) && y==0 || (y<=MovesAllowedY || y>=-MovesAllowedY) && x==0 ))
+				if((x == y ) ||((x <= MovesAllowedX ) && y==0 || (y<=MovesAllowedY ) && x==0 ))
 				{
 					R_BOO= true;
 				}else
@@ -171,7 +170,7 @@ public class MoveManager extends PeaceManager
 		{
 				MovesAllowedX = 8;
 				MovesAllowedY = 8;
-				if(x==y || x==-y )
+				if(x==y  )
 				{
 					R_BOO= true;
 				}else
@@ -183,9 +182,14 @@ public class MoveManager extends PeaceManager
 		{
 				MovesAllowedX = 2;
 				MovesAllowedY = 1;
-				if(((x==MovesAllowedX||x==MovesAllowedY)||(x == -MovesAllowedX ||x == -MovesAllowedY ))&&((y ==MovesAllowedY||y==MovesAllowedX )||(y==-MovesAllowedY||y== -MovesAllowedX)))
+				if((x==MovesAllowedX||x==MovesAllowedY)&&(y ==MovesAllowedY||y==MovesAllowedX ))
 				{
+					if(x != y){
 					R_BOO= true;
+					}else
+					{
+						R_BOO=false;
+					}
 				}else
 				{
 					R_BOO= false;
@@ -202,40 +206,34 @@ public class MoveManager extends PeaceManager
 				{
 					MovesAllowedY =0;
 				}
-				if(SelectedPeace.equals(W_Pawn))
+				int W_Border;
+				int B_Border;
+				if(P_Col.equals("White"))
 				{
-					if(finxX >= 4 ){
+					W_Border = 4;
+					B_Border = 3;
+				}else
+				{
+					W_Border = 3;
+					B_Border = 4;
+				}
+				
+				
+					if((finxX >= W_Border && getColorr(SelectedPeace).equals("White"))|| (finxX <=B_Border && getColorr(SelectedPeace).equals("Black"))){
 						MovesAllowedX = 2;
 					}else
 					{
 						MovesAllowedX =1;
 					}
 					
-					if((x == MovesAllowedX || x == MovesAllowedX-1) && (y== MovesAllowedY || y== -MovesAllowedY )   )
+					if((x <= MovesAllowedX ) && (y== MovesAllowedY )   )
 					{
 						R_BOO= true;
 					}else
 					{
 						R_BOO= false;
 					}
-				}else
-				{
-					if(finxX <=3)
-					{
-						MovesAllowedX = -2;
-					}else
-					{
-						MovesAllowedX = -1;
-					}
-					
-					if((x == MovesAllowedX || x == MovesAllowedX+1)&& (y== MovesAllowedY || y== -MovesAllowedY )   )
-					{
-						R_BOO= true;
-					}else
-					{
-						R_BOO= false;
-					}
-				}	
+				
 		}else
 		{
 			System.out.println("No peacve");
