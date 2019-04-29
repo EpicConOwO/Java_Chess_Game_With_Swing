@@ -14,6 +14,8 @@ public class Menu
 	int ResalutionY;
 	String[] _ScreenSizeListX = new String[]{"800","1024","1080","1280","1920"};
 	String[] _ScreenSizeListY = new String[]{"670","720","800","1080"};
+	String Col="White";
+	GameManager GManger = new GameManager();
 	Menu()
 	{
 		
@@ -81,7 +83,6 @@ public class Menu
 		{
 			public void actionPerformed(ActionEvent E)
 			{   
-				String Col="Black";
 				updateLabel();
 
 				if(Black_JR.isSelected()==true){
@@ -109,6 +110,59 @@ public class Menu
 		});
 		
 	}
+		JFrame GM_MENU;
+		JLabel	GM_Label;
+		JButton GM_BUTT_NewGame,GM_BUTT_QuitGame;
+		JFrame MaineGameFrame;
+		
+	 public Menu(boolean GameOver,JFrame MaineFrameWindow,int x,int y)
+	{
+		if(GameOver == true)
+		{
+			MaineGameFrame = MaineFrameWindow;
+			System.out.println("==================GameOver============");
+		
+		GM_MENU = new JFrame("Game Over");
+		GM_MENU.setLayout(new BorderLayout());
+		GM_Label = new JLabel("GameOver",SwingConstants.CENTER); 
+		GM_BUTT_NewGame =new JButton("Play Again");
+		GM_BUTT_QuitGame=  new JButton("Quit Game");
+		GM_MENU.setSize(300,100);
+		GM_MENU.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		GM_MENU.setLocationRelativeTo(MaineGameFrame);
+		GM_MENU.add(GM_Label,BorderLayout.NORTH);
+		GM_MENU.add(GM_BUTT_NewGame,BorderLayout.WEST);
+		GM_MENU.add(GM_BUTT_QuitGame,BorderLayout.EAST);
+		GM_MENU.setVisible(true	);
+		
+		GM_BUTT_NewGame.addActionListener(
+			new ActionListener()
+			{
+				public void actionPerformed(ActionEvent E)
+				{
+					System.out.println("Starting New GAME");
+					GM_MENU.dispose();
+					GManger.NewGame(Col,x,y,MaineFrameWindow);
+				}
+			}
+		);
+		GM_BUTT_QuitGame.addActionListener(
+			new ActionListener()
+			{
+				public void actionPerformed(ActionEvent E)
+				{
+					GManger.Quit();
+				}
+			}
+		);
+		}else
+		{
+			System.out.println("wtf :/ ");
+		}
+		
+	}
+	
+	
 	public void updateLabel()
 	{
 		ResalutionX = Integer.parseInt(""+ScreenSizeX.getSelectedItem());
