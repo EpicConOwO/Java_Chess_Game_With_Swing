@@ -1,35 +1,27 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import javax.imageio.ImageIO;
 
 public class PrintTiles 
 {	
 	PeaceManager PCM = new PeaceManager();
 	Font font     = new Font("Ariel", Font.BOLD, 62);
-	int initial_pos = 0;
-	int Final_pos = 0;
 	int G_Size;
 	private JLabel[][] lab ;
 	public JLabel Turn;
-	public JLabel[] PeacesPlayer1;
-	public JLabel[] PeacesPlayer2;
+	public JLabel[] PeacesPlayer1,PeacesPlayer2;
 	private JButton[][] Butt;
 	JButton ToolBarButton[];
+	
 	public JToolBar Toolbarr;
 	int Lastx=-1;
 	int Lasty=-1;
 	String CurrentSelectedPeace = null;
 	String lasttileSelected = null;
-	String TileSelected;
 	public String CurrentTurn = "White";
 	JPanel pan;
-	JFrame GM_MENU;
-	JLabel GM_Label;
-	JButton GM_BUTT_NewGame;
-	JButton GM_BUTT_QuitGame;
+	GameManager GManger = new GameManager();
+
 	String PlayerOneColor;
 		int black_peace ;
 		int B_Pawn ;
@@ -55,6 +47,7 @@ public class PrintTiles
 	int Player1TakenPeace = 1;
 	int Player2TakenPeace = 1;
 	String OpponentKing;
+	String PlayerKing;
 	public int XSize;
 	public int YSize;
 	public boolean _GameOver =false;
@@ -68,9 +61,11 @@ public class PrintTiles
 		if(Cool.equals("White"))
 		{
 			OpponentKing =PCM.B_King;
+			PlayerKing =PCM.W_King;
 		}else
 		{
 			OpponentKing =PCM.W_King;
+			PlayerKing =PCM.B_King;
 		}
 		
 		G_Size = Size;
@@ -151,7 +146,7 @@ public class PrintTiles
 					public void actionPerformed(ActionEvent A)
 					{
 						System.out.println("LOLOLOL");
-						NewGame();
+						GManger.NewGame(PlayerOneColor,XSize,YSize,MaineFrmeJIF);
 					}
 				
 			}
@@ -162,7 +157,7 @@ public class PrintTiles
 					public void actionPerformed(ActionEvent A)
 					{
 						System.out.println("LOLOLOL");
-						Quit();
+						GManger.Quit();
 					}
 				
 			}
@@ -295,16 +290,7 @@ public class PrintTiles
 		}
 	}
 	
-	public void NewGame()
-	{
-		MaineFrmeJIF.dispose();
-		new Runn(PlayerOneColor,XSize,YSize);
-	}
-	public void Quit()
-	{
-		System.out.println("Exiting GAME");
-					System.exit(0);
-	}
+	
 	public int Get_TakenPeaces(String Player)
 	{
 		if(Player == "Player1")
@@ -332,7 +318,7 @@ public class PrintTiles
 	}
 	public void GameOver()
 	{
-		System.out.println("==================GameOver============");
+		_GameOver = true;
 		for(int row=0;row<G_Size;row++)
 		{
 			for(int col=0;col<G_Size;col++)
@@ -340,39 +326,7 @@ public class PrintTiles
 				Butt[row][col].setEnabled(false);
 			}
 		}		
-		GM_MENU = new JFrame("Game Over");
-		GM_MENU.setLayout(new BorderLayout());
-		GM_Label = new JLabel("GameOver",SwingConstants.CENTER); 
-		GM_BUTT_NewGame =new JButton("Play Again");
-		GM_BUTT_QuitGame=  new JButton("Quit Game");
-		GM_MENU.setSize(300,100);
-		GM_MENU.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		GM_MENU.setLocationRelativeTo(pan);
-		GM_MENU.add(GM_Label,BorderLayout.NORTH);
-		GM_MENU.add(GM_BUTT_NewGame,BorderLayout.WEST);
-		GM_MENU.add(GM_BUTT_QuitGame,BorderLayout.EAST);
-		GM_MENU.setVisible(true	);
-		GM_BUTT_NewGame.addActionListener(
-			new ActionListener()
-			{
-				public void actionPerformed(ActionEvent E)
-				{
-					System.out.println("Starting New GAME");
-					GM_MENU.dispose();
-					NewGame();
-				}
-			}
-		);
-		GM_BUTT_QuitGame.addActionListener(
-			new ActionListener()
-			{
-				public void actionPerformed(ActionEvent E)
-				{
-					Quit();
-				}
-			}
-		);
-		
+		Menu gm = new Menu(_GameOver,MaineFrmeJIF,XSize,YSize);
 	}
 	
 	public String GetTurn()
@@ -449,7 +403,7 @@ public class PrintTiles
 				MovePeace(CurrentPeace, InitX,InitY,finX, finy,false);
 
 			}
-			if(TargetPece.equals(OpponentKing))
+			if(TargetPece.equals(OpponentKing) || TargetPece.equals(PlayerKing))
 			{
 				GameOver();
 			}
@@ -463,7 +417,6 @@ public class PrintTiles
 	
 	public void MovePeace(String Pece,int InitX,int InitY,int finX,int finy,boolean Tem)
 	{	
-		String Temp = PCM.getPeace(Pece);
 		MoveManager MovMan = new MoveManager(Pece,CurrentTurn,finX,"MovePeace");
 		int blocksmovedx = InitX - finX;
 		int blocksmovedy = InitY - finy;
@@ -476,7 +429,7 @@ public class PrintTiles
 				System.out.println("Moved "+Pece+" From "+InitX+InitY+" to " +finX+finy);
 				
 				lab[InitX][InitY].setText("");
-				lab[finX][finy].setText(Temp);
+				lab[finX][finy].setText(Pece);
 				CurrentTurn= MovMan.CurrentTurnMove;
 				}else
 				{
@@ -496,8 +449,7 @@ public class PrintTiles
 	public void setChessPeace(int x, int y,String Pece)
 	{
 		
-		String Temp = PCM.getPeace(Pece);
-		lab[x][y] = new JLabel(Temp,SwingConstants.CENTER);
+		lab[x][y] = new JLabel(Pece,SwingConstants.CENTER);
 		lab[x][y].setFont(font);
 		System.out.println(" " +Pece+" Spawned at : " +x+y);
 		Butt[x][y].add(lab[x][y]);
