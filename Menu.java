@@ -115,7 +115,7 @@ public class Menu
 		JButton GM_BUTT_NewGame,GM_BUTT_QuitGame;
 		JFrame MaineGameFrame;
 		
-	 public Menu(boolean GameOver,JFrame MaineFrameWindow,int x,int y)
+	 public Menu(boolean GameOver,JFrame MaineFrameWindow,int x,int y,String Col)
 	{
 		if(GameOver == true)
 		{
