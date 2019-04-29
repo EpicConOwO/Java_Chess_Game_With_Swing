@@ -58,6 +58,7 @@ public class PrintTiles
 		YSize=SizeY;
 		MaineFrmeJIF = JIF;
 		PlayerOneColor = Cool;
+		GManger.InitialtizeGame(PlayerKing,OpponentKing,PlayerOneColor);
 		if(Cool.equals("White"))
 		{
 			OpponentKing =PCM.B_King;
@@ -145,7 +146,6 @@ public class PrintTiles
 			{
 					public void actionPerformed(ActionEvent A)
 					{
-						System.out.println("LOLOLOL");
 						GManger.NewGame(PlayerOneColor,XSize,YSize,MaineFrmeJIF);
 					}
 				
@@ -156,7 +156,6 @@ public class PrintTiles
 			{
 					public void actionPerformed(ActionEvent A)
 					{
-						System.out.println("LOLOLOL");
 						GManger.Quit();
 					}
 				
@@ -167,7 +166,7 @@ public class PrintTiles
 		{
 			for(int col = 0;col< Size;col++)
 			{	 
-				System.out.println("Blocks Created at :" +row+col);
+				GManger.LogConsole("Blocks Created at :" +row+col);
 				lab[row][col] = new JLabel("",SwingConstants.CENTER);
 				Butt[row][col] = new JButton("");
 				setChessPeace(row,col,"");
@@ -241,9 +240,9 @@ public class PrintTiles
 					public void actionPerformed (ActionEvent AE)
 					{
 						final Color PrevCol = Butt[tempx][tempy].getBackground(); 
-						System.out.println("Clicked on : "+tempx+tempy);
+						GManger.LogConsole("Clicked on : "+tempx+tempy);
 							CurrentSelectedPeace= ""+tempx+tempy;
-							System.out.println("Setted CurrentSelectedPeace  to  : "+tempx+tempy+"\n");
+							GManger.LogConsole("Setted CurrentSelectedPeace  to  : "+tempx+tempy+"\n");
 							if(_GameOver == false)
 							{
 												
@@ -253,15 +252,15 @@ public class PrintTiles
 									{	
 										if(lab[tempx][tempy].getText().isEmpty() == false )
 										{
-										System.out.println(" CurrentSelectedPeace " +CurrentSelectedPeace );
+										GManger.LogConsole(" CurrentSelectedPeace " +CurrentSelectedPeace );
 										
 										Lastx = tempx; 
 										Lasty = tempy;
 										lasttileSelected = ""+Lastx+Lasty; // makes the current tile the last tile
-										System.out.println(" setted lasttileSelected to  " +lasttileSelected );
+										GManger.LogConsole(" setted lasttileSelected to  " +lasttileSelected );
 										}else
 										{
-										System.out.println("No Peace in Tile");
+										GManger.LogConsole("No Peace in Tile");
 										}
 									}else
 									{
@@ -278,7 +277,7 @@ public class PrintTiles
 									}
 								}else
 								{
-									System.out.println(" Clicked on same tile");
+									GManger.LogConsole(" Clicked on same tile");
 								}
 							}else
 							{
@@ -326,7 +325,7 @@ public class PrintTiles
 				Butt[row][col].setEnabled(false);
 			}
 		}		
-		Menu gm = new Menu(_GameOver,MaineFrmeJIF,XSize,YSize);
+		Menu gm = new Menu(_GameOver,MaineFrmeJIF,XSize,YSize,PlayerOneColor);
 	}
 	
 	public String GetTurn()
@@ -344,7 +343,7 @@ public class PrintTiles
 		{
 			for(int j=Initialy;j<=FinalY;j++)
 			{
-					System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ "+i+j);
+					GManger.LogConsole("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ "+i+j);
 				
 					if(lab[i][j].getText().isEmpty() == false && (lab[i][j].equals(PCM.W_Knight) || lab[i][j].equals(PCM.B_Knight)))
 					{
@@ -358,7 +357,7 @@ public class PrintTiles
 						}
 					}else
 					{
-						 System.out.println("empy tile at "+i+j);
+						 GManger.LogConsole("empy tile at "+i+j);
 
 						//Butt[i][j].setBackground(Color.GREEN);
 							return false;
@@ -411,7 +410,7 @@ public class PrintTiles
 			//AddTakenPeaceToPannel(TargetPece,"Player1");
 		}else
 		{
-				System.out.println("Cant Kill Ur Own Team");
+				GManger.LogConsole("Cant Kill Ur Own Team");
 		}
 	}
 	
@@ -420,28 +419,37 @@ public class PrintTiles
 		MoveManager MovMan = new MoveManager(Pece,CurrentTurn,finX,"MovePeace");
 		int blocksmovedx = InitX - finX;
 		int blocksmovedy = InitY - finy;
-		if(MovMan.CanMove(blocksmovedx,blocksmovedy,Tem) == true)
+		if(blocksmovedx <0)
+		{
+			GManger.LogConsole("Minus value at blocksmovedx ");
+			blocksmovedx = blocksmovedx *-1;
+		} if(blocksmovedy <0)
+		{
+			GManger.LogConsole("Minus value at blocksmovedy");
+			blocksmovedy = blocksmovedy *-1;
+		}
+		if(MovMan.CanMove(blocksmovedx,blocksmovedy,Tem,PlayerOneColor) == true)
 		{
 			//visualize( InitX, InitY, finX, finy, Pece);//rewritethis
 			if((MovMan.TurnManager() == true  )  )
 			{
 				if(colision(InitX,InitY,finX,finy,Pece)==false){
-				System.out.println("Moved "+Pece+" From "+InitX+InitY+" to " +finX+finy);
+				GManger.LogConsole("Moved "+Pece+" From "+InitX+InitY+" to " +finX+finy);
 				
 				lab[InitX][InitY].setText("");
 				lab[finX][finy].setText(Pece);
 				CurrentTurn= MovMan.CurrentTurnMove;
 				}else
 				{
-					System.out.println("Coliison has occured");
+					GManger.LogConsole("Coliison has occured");
 				}
 			}else
 			{
-				System.out.println("Not ur Turn  its : " + CurrentTurn+ "'s Turn");
+				GManger.LogConsole("Not ur Turn  its : " + CurrentTurn+ "'s Turn");
 			}
 		}else
 		{
-			System.out.println("Invalid Movement");
+			GManger.LogConsole("Invalid Movement");
 		}
 				Turn.setText(GetTurn());
 
@@ -451,7 +459,7 @@ public class PrintTiles
 		
 		lab[x][y] = new JLabel(Pece,SwingConstants.CENTER);
 		lab[x][y].setFont(font);
-		System.out.println(" " +Pece+" Spawned at : " +x+y);
+		GManger.LogConsole(" " +Pece+" Spawned at : " +x+y);
 		Butt[x][y].add(lab[x][y]);
 	}
 }
