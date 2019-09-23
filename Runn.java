@@ -5,7 +5,7 @@ public class Runn
 	//Private initializations
 	public JFrame MaineWindow_Frame = new JFrame("ChessGame");
 	JPanel MaineWindow_Pannel;
-	
+
 	Runn(String Col,int SizeX,int SizeY)
 	{
 		System.out.println(Col+" Selected");
@@ -18,14 +18,14 @@ public class Runn
 		MaineWindow_Pannel.setSize(new Dimension(SizeX,SizeY));
 		MaineWindow_Frame.add(PT.Turn,BorderLayout.SOUTH);
 		MaineWindow_Frame.add(PT.Toolbarr,BorderLayout.NORTH);
-		
-		
+
+
 		MaineWindow_Frame.add(MaineWindow_Pannel);
 		MaineWindow_Frame.setResizable(false);
 		MaineWindow_Frame.setLocationRelativeTo(null);
 
 		MaineWindow_Frame.setVisible(true);
-		
+
 	}
 	public void CloseFrame()
 	{
@@ -44,9 +44,9 @@ public class Runn
 				{
 						new Runn();
 				}
-				
+
 			}
 		);
 	}
-	
+
 }
